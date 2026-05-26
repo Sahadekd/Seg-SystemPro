@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #0f172a;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  min-width: 320px;
+  min-height: 100vh;
+  background: radial-gradient(circle at top right, #1e293b, #0f172a);
+}
+
+#root {
+  width: 100%;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.code-font {
+  font-family: 'Fira Code', 'Courier New', Courier, monospace;
+}
+
+@keyframes pulse-vulnerable {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+@keyframes pulse-protected {
+  0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+
+.vulnerable-glow {
+  animation: pulse-vulnerable 2s infinite;
+}
+
+.protected-glow {
+  animation: pulse-protected 2s infinite;
+}
+
+@theme {
+  --color-vulnerable: #ef4444;
+  --color-protected: #22c55e;
+  --color-dark-bg: #0f172a;
+  --color-glass: rgba(255, 255, 255, 0.05);
+  
+  --shadow-vulnerable-glow: 0 0 15px rgba(239, 68, 68, 0.5);
+  --shadow-protected-glow: 0 0 15px rgba(34, 197, 94, 0.5);
+}
