@@ -30,7 +30,7 @@ const sidebarData = [
     title: "4. Injeção Baseada em Erro",
     description: "Causar erros propositais no banco para extrair informações das mensagens de erro retornadas pelo servidor.",
     impact: "Vaza versão do banco, nomes de tabelas, estruturas de colunas e dados.",
-    payload: "' AND 1=(SELECT COUNT(*) FROM users) --",
+    payload: "' ORDER BY 999 --",
     explanation: "No modo vulnerável, o servidor retorna erros brutos do banco (ex: erros de sintaxe) diretamente para o usuário.",
     mitigation: "Tratamento de erros genérico e queries parametrizadas impedem que sub-queries maliciosas sejam executadas."
   },
@@ -38,7 +38,7 @@ const sidebarData = [
     title: "5. Blind SQL Injection",
     description: "Fazer perguntas de verdadeiro/falso ao banco e observar a resposta da aplicação (baseado em booleano).",
     impact: "Extração lenta mas constante de dados adivinhando caracteres um por um.",
-    payload: "' AND (SELECT SUBSTRING(password,1,1) FROM users WHERE email='admin@lab.com')='a' --",
+    payload: "admin@lab.com' AND 1=1 --",
     explanation: "O atacante observa se a página carrega 'normalmente' ou com erro para confirmar seu palpite.",
     mitigation: "Tipagem estrita e parametrização garantem que operadores lógicos não possam ser injetados."
   },
@@ -46,7 +46,7 @@ const sidebarData = [
     title: "6. Injeção Baseada em Tempo",
     description: "Um tipo de Blind SQLi onde o atacante mede quanto tempo o servidor leva para responder.",
     impact: "Extração de dados mesmo quando a aplicação não retorna erros ou mudanças visíveis.",
-    payload: "' AND (SELECT 1 FROM users WHERE email='admin@lab.com' AND pg_sleep(5)) --",
+    payload: "admin@lab.com' OR 1=(SELECT 1 FROM pg_sleep(5)) --",
     explanation: "Se o servidor demorar 5 segundos para responder, o atacante sabe que a condição testada é verdadeira.",
     mitigation: "Sanitização e parametrização impedem a execução de funções do banco como pg_sleep."
   },
@@ -54,18 +54,11 @@ const sidebarData = [
     title: "7. Simulação de DROP TABLE",
     description: "Um ataque destrutivo onde o atacante tenta deletar tabelas inteiras ou o banco de dados.",
     impact: "Perda irreparável de dados, queda do sistema e interrupção do negócio.",
-    payload: "'; DROP TABLE users; --",
+    payload: "'; DROP TABLE lab_temp_users; --",
     explanation: "No modo vulnerável, o ponto e vírgula permite executar múltiplos comandos em uma única requisição.",
     mitigation: "Queries parametrizadas não permitem múltiplos statements e tratam o payload como texto literal."
   },
-  {
-    title: "8. Bypass de Autorização",
-    description: "Manipular identificadores (como IDs na URL) para acessar dados de outros usuários.",
-    impact: "Escalação de privilégios e vazamento massivo de dados.",
-    payload: "/api/users/id_do_admin",
-    explanation: "Acessar um recurso diretamente via ID sem verificar se o usuário atual tem permissão para vê-lo.",
-    mitigation: "Sempre verifique as permissões da sessão e use queries parametrizadas para buscar o recurso."
-  }
+
 ];
 
 const Sidebar: React.FC = () => {
