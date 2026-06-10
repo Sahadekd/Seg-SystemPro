@@ -70,8 +70,8 @@ const InjectionCard: React.FC<InjectionCardProps> = ({
               </div>
 
               <div>
-                <h4 className="flex items-center gap-2 text-sm font-bold text-slate-400 mb-1">
-                   EXPLICAÇÃO
+                <h4 className="flex items-center gap-2 text-sm font-bold text-slate-400 mb-1 uppercase tracking-wider">
+                   {isVulnerable ? 'Explicação Técnica' : 'Como foi Corrigido?'}
                 </h4>
                 <p className="text-sm text-slate-400 italic">
                   {isVulnerable ? explanation : mitigation}
@@ -80,7 +80,7 @@ const InjectionCard: React.FC<InjectionCardProps> = ({
 
               {!isVulnerable && (
                 <div className="flex items-center gap-2 text-xs font-bold text-protected bg-protected/10 p-2 rounded border border-protected/20">
-                  <CheckCircle size={14} /> MITIGADO POR QUERIES PARAMETRIZADAS
+                  <CheckCircle size={14} /> DEFESA ATIVA NO BACKEND
                 </div>
               )}
             </div>
