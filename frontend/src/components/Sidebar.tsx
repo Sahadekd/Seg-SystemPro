@@ -14,7 +14,7 @@ const sidebarData = [
     title: "2. Enumeração de Usuários",
     description: "Descoberta de emails válidos através de mensagens de erro ou tempo de resposta.",
     impact: "Vazamento de privacidade e facilitação de ataques de força bruta.",
-    payload: "admin@lab.com",
+    payload: "naoexiste@lab.com → Usuário não encontrado /// admin@lab.com → Senha incorreta",
     explanation: "Respostas diferentes para 'usuário inexistente' vs 'senha errada' confirmam a existência de contas.",
     mitigation: "Respostas Genéricas: O sistema deve retornar a mesma mensagem de erro para qualquer falha de login, ocultando a existência do usuário."
   },
@@ -22,7 +22,7 @@ const sidebarData = [
     title: "3. Injeção UNION SELECT",
     description: "Uso do UNION para anexar dados de outras tabelas ao resultado original.",
     impact: "Exfiltração em massa de dados sensíveis (senhas, tokens, etc).",
-    payload: "' UNION SELECT name, password, 'role' FROM users --",
+    payload: "' UNION SELECT 1, name, email, password, role, 6 FROM users --    ///   ' UNION SELECT '00000000-0000-0000-0000-000000000000',name,email,password,role,NOW()FROM users --",
     explanation: "Permite 'roubar' colunas de qualquer tabela e exibi-las na interface da aplicação.",
     mitigation: "Parametrização: Ao usar placeholders ($1, $2), palavras-chave como 'UNION' são tratadas como busca literal e nunca executadas como comando."
   },
@@ -30,7 +30,7 @@ const sidebarData = [
     title: "4. Injeção Baseada em Erro",
     description: "Extração de dados técnicos através de mensagens de erro detalhadas do banco.",
     impact: "Vaza versões do sistema, nomes de tabelas e metadados estruturais.",
-    payload: "' AND 1=(SELECT CAST(version() AS INT)) --",
+    payload: "' ORDER BY 999 --",
     explanation: "Força um erro de conversão de tipo para que o banco exiba dados internos na própria mensagem de erro.",
     mitigation: "Tratamento de Erros: Desativar mensagens detalhadas em produção e retornar apenas erros genéricos (ex: 500 Internal Error)."
   },
@@ -38,7 +38,7 @@ const sidebarData = [
     title: "5. Blind SQL Injection",
     description: "Extração lenta de dados através de perguntas booleanas (verdadeiro/falso).",
     impact: "Recuperação total da base, caractere por caractere, sem feedback visual direto.",
-    payload: "admin@lab.com' AND (SELECT SUBSTRING(password,1,1) FROM users LIMIT 1)='a' --",
+    payload: "admin@lab.com' AND 1=1 --  ///  admin@lab.com' AND 1=2 --",
     explanation: "O atacante deduz a senha observando se a página carrega ou falha para cada letra testada.",
     mitigation: "Validação de Input e Parametrização: Filtrar caracteres especiais e garantir que a query não aceite lógica booleana injetada."
   },
@@ -46,7 +46,7 @@ const sidebarData = [
     title: "6. Injeção Baseada em Tempo",
     description: "Ataque 'cego' que confirma dados medindo o tempo de resposta do servidor.",
     impact: "Extração de dados mesmo em sistemas sem retorno visual ou de erro.",
-    payload: "admin@lab.com' AND (SELECT 1 FROM pg_sleep(5)) --",
+    payload: "admin@lab.com' OR 1=(SELECT 1 FROM pg_sleep(5))--",
     explanation: "Se o servidor demora 5s para responder, o atacante sabe que a condição injetada é verdadeira.",
     mitigation: "Timeouts e Parametrização: Limitar o tempo de execução de queries e impedir a execução de funções de sistema via parâmetros."
   },
@@ -54,7 +54,7 @@ const sidebarData = [
     title: "7. Simulação de DROP TABLE",
     description: "Execução de múltiplos comandos (stacking queries) para deletar dados.",
     impact: "Destruição total da base de dados e interrupção do serviço.",
-    payload: "'; DROP TABLE users; --",
+    payload: "'; DROP TABLE lab_temp_users; --",
     explanation: "Tenta encerrar a query legítima e iniciar um comando destrutivo logo em seguida.",
     mitigation: "Desativar Multi-Statements: Configurar o driver do banco para permitir apenas um comando por requisição, bloqueando o uso do ponto e vírgula."
   },
